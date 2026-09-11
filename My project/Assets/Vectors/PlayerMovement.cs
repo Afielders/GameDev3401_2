@@ -29,6 +29,7 @@ public class PlayerMovement : MonoBehaviour
         //Get Input
         direction.x = Input.GetAxisRaw("Horizontal");
         direction.z = Input.GetAxisRaw("Vertical");
+        direction = direction.normalized;
     }
 
     private void FixedUpdate()
@@ -40,6 +41,13 @@ public class PlayerMovement : MonoBehaviour
 
         //Move player.
         rb.MovePosition(rb.position + velocity);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red; 
+        Gizmos.DrawLine(transform.position, transform.position + direction * 2);
+
     }
 }
 
