@@ -1,4 +1,5 @@
 using Mono.Cecil.Cil;
+using System.Data.Common;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -17,10 +18,13 @@ public class Turret : MonoBehaviour
 
     public float view_angle = 25; //In degrees.
 
+    private float dot_needed_to_see;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-
+        //Find the dot product needed for the turret to see its target.
+        dot_needed_to_see = Mathf.Cos(view_angle / 2 * Mathf.Deg2Rad);
     }
 
 
@@ -35,34 +39,49 @@ public class Turret : MonoBehaviour
         }
         else // Otherwise...
         {
-            //Spawn Bullets
-            //Rest the timer
-            shoot_timer = rate_of_fire;
-            //Create new bullet
-            GameObject new_bullet = Instantiate(bullet);
-            //Move the bullet to the position of the turret.
-            new_bullet.transform.position = transform.position;
-
-
             //Find the direction the bullet will travel in.
             dir_to_target = (target.transform.position - transform.position).normalized;
 
-            //Axis to rotate bullet_dir by.
-            Vector3 axis = Vector3.Cross(dir_to_target, Vector3.up);
-            //Rotate bullet_dir along axis by spread.
-            Vector3 spread_dir = Quaternion.AngleAxis(Random.Range(0f, spread), axis) * dir_to_target;
-            //Rotate the spread_dir along the bullet dir by some angle between 0 and 360 degrees.
-            Vector3 final_dir = Quaternion.AngleAxis(Random.Range(0f, 360f), dir_to_target) * spread_dir;
+            if (TargetInView())
+            {
+                //Spawn Bullets
+                //Rest the timer
+                shoot_timer = rate_of_fire;
+                //Create new bullet
+                GameObject new_bullet = Instantiate(bullet);
+                //Move the bullet to the position of the turret.
+                new_bullet.transform.position = transform.position;
+
+                //Axis to rotate bullet_dir by.
+                Vector3 axis = Vector3.Cross(dir_to_target, Vector3.up);
+                //Rotate bullet_dir along axis by spread.
+                Vector3 spread_dir = Quaternion.AngleAxis(Random.Range(0f, spread), axis) * dir_to_target;
+                //Rotate the spread_dir along the bullet dir by some angle between 0 and 360 degrees.
+                Vector3 final_dir = Quaternion.AngleAxis(Random.Range(0f, 360f), dir_to_target) * spread_dir;
 
 
-            // Pass the direction to the bullet.
-            new_bullet.GetComponent<Bullet>().SetVelocity(final_dir);
+                // Pass the direction to the bullet.
+                new_bullet.GetComponent<Bullet>().SetVelocity(final_dir);
+            }
+           
         }
     }
 
     private bool TargetInView()
     {
-        return true;
+        //Flatten the dir_to_target to make it 2D.
+        //We no longer have to worry about up/down, just about what is infront of the turret.
+        Vector3 dir_to_target_flat = new Vector3(dir_to_target.x, 0, dir_to_target.z);
+
+        if (Vector3.Dot(dir_to_target_flat, transform.forward) > dot_needed_to_see)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
     }
 
 
@@ -117,6 +136,10 @@ public class Turret : MonoBehaviour
         Gizmos.DrawLine(transform.position, transform.position + right * 10);
         Gizmos.DrawLine(transform.position, transform.position + left * 10);
 
+        //Flatted dir_to_target that is used to detect if the atarget is infront of the turret.
+        Vector3 dir_to_target_flat = new Vector3(dir_to_target.x, 0, dir_to_target.z).normalized;
+        Gizmos.color = new Color(1f, 0.2705882f, 0f, 1f);
+        Gizmos.DrawLine(transform.position, transform.position + dir_to_target_flat * 2);
 
 
         #endregion
