@@ -1,18 +1,21 @@
 using UnityEngine;
-
+using UnityEngine.Events;
 
 //A timer is simething that keeps track of time
 //If a timer has >0 time it wiill begin to count down until no more time remains.
 //Timers can be paused.
-    /// A paused timer retains its currecnt time value.
-    /// A timer can be paused/unpaused by using the SetPause() funtion.
-    /// A timer will be unpasused if StartTimer() is used.
+/// A paused timer retains its currecnt time value.
+/// A timer can be paused/unpaused by using the SetPause() funtion.
+/// A timer will be unpasused if StartTimer() is used.
 public class Timer : MonoBehaviour
 {
     [Tooltip("The current time on the timer. If the timer has time, it will count down.")]
     [SerializeField][Range(0f, 600f)] private float time;
     private bool is_paused = false;
     private bool has_finished = false;
+
+    //Event to signal when the timer has finished counting down.
+    public UnityEvent TimerFinished;
 
     //Gets the time from the timer.
     public float GetTime()
@@ -50,7 +53,8 @@ public class Timer : MonoBehaviour
     {
         has_finished = true; // The timer has finished.
         time = 0; //So set its time to zero.
-       
+        TimerFinished.Invoke(); //Invoke the event to signal that the timer has finished.
+
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

@@ -10,7 +10,7 @@ public class Cube : MonoBehaviour
     //Timer Variables
     private float change_color_time = 2f;
 
-    private void ChangeColor()
+    public void ChangeColor()
     {
         //Pick random r, g, b values...
         float r = Random.Range(0f, 1f); 
@@ -18,6 +18,9 @@ public class Cube : MonoBehaviour
         float b = Random.Range(0f, 1f);
         //Set the color of the cube.
         mesh_renderer.material.color = new Color(r, g, b);
+
+        //Restart the timer.
+        timer.StartTimer(change_color_time);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -39,11 +42,12 @@ public class Cube : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.X))
             timer.SetPause(false);
 
-        if (timer.IsFinsihed())
+        /*if (timer.IsFinsihed())
         {
             ChangeColor();
             timer.StartTimer(change_color_time);
-        }
+        
+        }*/
 
     }
 }

@@ -1,7 +1,9 @@
 using UnityEngine;
 using UnityEngine.Events;
-public class Door : MonoBehaviour
+public class ColorCube : MonoBehaviour
 {
+   
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -13,9 +15,8 @@ public class Door : MonoBehaviour
     {
         
     }
-
-    public void OnOpenDoor()
+    public void ChangeColor(Color col)
     {
-        Destroy(this.gameObject);
+        GetComponent<MeshRenderer>().material.color = col;
     }
 }

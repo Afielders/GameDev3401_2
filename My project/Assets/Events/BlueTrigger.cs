@@ -1,7 +1,10 @@
 using UnityEngine;
 using UnityEngine.Events;
-public class Door : MonoBehaviour
+public class BlueTrigger : MonoBehaviour
 {
+    public UnityEvent<Color> SetBlue;
+
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -13,9 +16,8 @@ public class Door : MonoBehaviour
     {
         
     }
-
-    public void OnOpenDoor()
+    private void OnTriggerEnter(Collider other)
     {
-        Destroy(this.gameObject);
+        SetBlue.Invoke(Color.blue);
     }
 }
