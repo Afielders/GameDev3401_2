@@ -1,9 +1,14 @@
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Cube : MonoBehaviour
 {
 
     //Components
+
+    
+
     private MeshRenderer mesh_renderer;
     private Timer timer;
 
@@ -30,6 +35,8 @@ public class Cube : MonoBehaviour
         mesh_renderer = GetComponent<MeshRenderer>();
         timer = GetComponent<Timer>();
 
+       
+
         //Start the timer.
         timer.StartTimer(change_color_time);
     }
@@ -48,6 +55,8 @@ public class Cube : MonoBehaviour
             timer.StartTimer(change_color_time);
         
         }*/
+        
+        
 
     }
 }
