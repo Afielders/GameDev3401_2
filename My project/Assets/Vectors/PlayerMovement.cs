@@ -8,8 +8,8 @@ public class PlayerMovement : MonoBehaviour
 
     //Input
 
-    //private InputAction move_action;
-    //private InputAction jump_action;
+    private InputAction move_action;
+    private InputAction jump_action;
 
     //Movement
     public float speed = 5;
@@ -26,9 +26,9 @@ public class PlayerMovement : MonoBehaviour
         //Get Components.
         rb = GetComponent<Rigidbody>();
 
-        //Find references to the actions.
-        //move_action = InputSystem.actions.FindAction("Move");
-        //jump_action = InputSystem.actions.FindAction("Jump");
+       // Find references to the actions.
+        move_action = InputSystem.actions.FindAction("Move");
+        jump_action = InputSystem.actions.FindAction("Jump");
     }
 
     // Update is called once per frame
@@ -36,13 +36,18 @@ public class PlayerMovement : MonoBehaviour
     {
 
         //Get Input
-       //direction.x = Input.GetAxisRaw("Horizontal");
-       //direction.z = Input.GetAxisRaw("Vertical");
-       //direction = direction.normalized;
+        //direction.x = Input.GetAxisRaw("Horizontal");
+        //direction.z = Input.GetAxisRaw("Vertical");
+        //direction = direction.normalized;
 
-        //direction.x = move_action.ReadValue<Vector2>().x;
-        //direction.z = move_action.ReadValue<Vector2>().y;
-       // direction = direction.normalized;
+        direction.x = move_action.ReadValue<Vector2>().x;
+        direction.z = move_action.ReadValue<Vector2>().y;
+
+
+       // Debug.Log(jump_action.phase);
+
+        if (jump_action.phase == InputActionPhase.Performed)
+            Debug.Log("Button fully held");
     }
 
     private void FixedUpdate()
@@ -63,10 +68,10 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
-    public void ReadMoveInput(InputAction.CallbackContext context)
-    {
-        direction.x = context.ReadValue<Vector2>().x;
-        direction.z = context.ReadValue<Vector2>().y;
-    }
+    //public void ReadMoveInput(InputAction.CallbackContext context)
+    //{
+      //  direction.x = context.ReadValue<Vector2>().x;
+        //direction.z = context.ReadValue<Vector2>().y;
+    //}
 }
 
