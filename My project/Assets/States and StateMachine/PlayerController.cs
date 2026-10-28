@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -16,7 +17,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public Vector2 direction = Vector2.zero;
     [HideInInspector] public Vector2 xz_velocity = Vector2.zero;
     [HideInInspector] public float y_velocity = 0f;
-    [HideInInspector] public Vector3 veolcity = Vector3.zero;
+    [HideInInspector] public Vector3 velocity = Vector3.zero;
 
 
     //Accerlerations
@@ -33,12 +34,23 @@ public class PlayerController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        //Get Components,
+        controller = GetComponent<CharacterController>();
+        rend = GetComponent<MeshRenderer>();
         
+        //Get Inputs
+        move_action = InputSystem.actions.FindAction("Move");
+        jump_action = InputSystem.actions.FindAction("Jump");
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
+        //Read Input 
+        direction = move_action.ReadValue<Vector2>();
+        jump = jump_action.IsPressed();
+
     }
 }
