@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
     public float gravity = 9.81f; // Must be positive.
 
     //Forces
-    public float jump_impusle = 10f;
+    public float jump_impulse = 10f;
 
     //Jumping
     [HideInInspector] public bool jump = false;

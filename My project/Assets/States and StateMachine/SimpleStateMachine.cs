@@ -57,6 +57,16 @@ public class SimpleStateMachine : MonoBehaviour
             current_state = States.Ground;
             return;
         }
+
+        //Air
+        if(player_controller.jump)
+        {
+            player_controller.y_velocity = player_controller.jump_impulse;
+            current_state = States.Air;
+            return;
+
+
+        }
         #endregion
     }
 
@@ -87,19 +97,79 @@ public class SimpleStateMachine : MonoBehaviour
         //Move
         player_controller.controller.Move(player_controller.velocity * Time.fixedDeltaTime);
 
+        //Sync Velocities
+        player_controller.velocity = player_controller.controller.velocity;
+        player_controller.xz_velocity = new Vector2(player_controller.controller.velocity.x,
+                                                    player_controller.controller.velocity.z);
 
         #region State Changes
         //Idle States
         if (player_controller.controller.velocity == Vector3.zero)
         {
-            current_state = States.Idle;
+            if (player_controller.direction == Vector2.zero)
+            {
+                current_state = States.Idle;
+                return;
+            }
+        }
+
+        //Air
+        if (player_controller.jump && player_controller.controller.isGrounded)
+        {
+            player_controller.y_velocity = player_controller.jump_impulse;
+            current_state = States.Air;
+            return;
+
+        }
+
+        //Walking offa ledge.
+        if(!player_controller.controller.isGrounded)
+        {
+            current_state = States.Air;
             return;
         }
+
         #endregion                         
     }
 
     private void AirState()
     {
+        //Change Color
+        player_controller.rend.material.color = Color.blue;
 
+        //Accelerate
+        player_controller.xz_velocity += player_controller.direction
+                                       * player_controller.accerleration
+                                       * Time.fixedDeltaTime;
+        player_controller.xz_velocity = Vector2.ClampMagnitude(player_controller.xz_velocity,
+                                                               player_controller.speed);
+
+        //Gravity
+        player_controller.y_velocity -= player_controller.gravity * Time.fixedDeltaTime;
+
+        //Construct Velicity
+        player_controller.velocity = new Vector3(player_controller.xz_velocity.x,
+                                                 player_controller.y_velocity,
+                                                 player_controller.xz_velocity.y);
+
+
+        //Move
+        player_controller.controller.Move(player_controller.velocity * Time.fixedDeltaTime);
+
+        //Sync Velocities
+        player_controller.velocity = player_controller.controller.velocity;
+        player_controller.xz_velocity = new Vector2(player_controller.controller.velocity.x,
+                                                    player_controller.controller.velocity.z);
+        player_controller.y_velocity = player_controller.controller.velocity.y;
+
+        #region State Changes
+        if (player_controller.controller.isGrounded)
+        {
+            if (player_controller.xz_velocity == Vector2.zero)
+                current_state = States.Idle;
+            else
+                current_state = States.Ground;
+        }
+        #endregion 
     }
 }
